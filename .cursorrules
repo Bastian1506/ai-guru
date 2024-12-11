@@ -1,6 +1,6 @@
 # Project Instructions
 
-Use the project specification and guidelines as you build the Perplexity clone.
+Use the project specification and guidelines as a RAG application called ai-guru.
 
 Write the complete code for every step. Do not get lazy.
 
@@ -8,14 +8,13 @@ Your goal is to completely finish whatever the user asks for.
 
 ## Overview
 
-Perplexity clone is a web app that allows you to search the web and get an AI generated answer.
+ai-guru is a web app that allows you to chat with blog posts from the best AI engineers.
 
 ## Tech Stack
 
 - Frontend: Next.js, Tailwind, Shadcn, Framer Motion
 - Backend: Postgres, Supabase, Drizzle ORM, Server Actions
 - Auth: Clerk
-- Payments: Stripe
 - Deployment: Vercel
 
 ## Project Structure
@@ -24,9 +23,11 @@ Perplexity clone is a web app that allows you to search the web and get an AI ge
 
 - `actions` - Server actions
   - `db` - Database related actions
-  - Other actions
+  - `rag` - RAG components
+    - `generate` - RAG generation
+    - `processing` - RAG processing
+    - `retrieval` - RAG retrieval
 - `app` - Next.js app router
-  - `api` - API routes
   - `route` - An example route (each of these are only if needed)
     - `_components` - One-off components for the route
     - `layout.tsx` - Layout for the route
@@ -127,6 +128,7 @@ It uses Next.js, Tailwind, Shadcn, and Framer Motion.
 - Use `"use server"` at the top of the file
 - Implement Suspense for asynchronous data fetching
 - Use a separate fetcher component for data loading (see example below)
+- Make sure to use `async` for all server components and pages
 
 Example of a server page:
 
@@ -354,6 +356,7 @@ const schema = {
 - Queries have 'use server' at the top
 - Only write the needed queries
 - Do not use explicit returns in queries
+- Add type security to queries
 - Sort in CRUD order: Create, Read, Update, Delete
 
 Example of a query:
@@ -468,8 +471,3 @@ It uses Clerk for authentication.
 
 - Import the auth helper with `import { auth } from "@clerk/nextjs/server"` in server components
 
-### Payments Rules
-
-Follow these rules when working on payments.
-
-It uses Stripe for payments.

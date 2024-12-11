@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1733168068120,
+      "tag": "0000_serious_menace",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1733221752072,
+      "tag": "0001_dear_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733229287801,
+      "tag": "0002_rich_chronomancer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1733598058952,
+      "tag": "0003_aromatic_may_parker",
+      "breakpoints": true
+    }
+  ]
+}
