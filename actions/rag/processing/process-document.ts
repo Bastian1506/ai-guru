@@ -1,45 +1,42 @@
 "use server";
 
 import { db } from "@/db/db";
-import { documentsTable } from "@/db/schema";
+import { documentsTable, InsertDocument } from "@/db/schema";
 import { generateEmbeddings } from "../generation/generate-embeddings";
 import { splitText } from "./split-text";
 import { extractMetadata } from "./extract-metadata";
+import { createContextualChunks } from "./create-contextual-chunks";
 
-// Processes a document by splitting it into chunks, generating embeddings, and storing in DB
 export async function processDocument(text: string, url: string) {
   try {
-    // Extract metadata and clean content
     const metadataResult = await extractMetadata(text);
+    
     if (!metadataResult.isSuccess) {
-      throw new Error("Failed to extract metadata");
+      throw new Error(`Metadata extraction failed: ${metadataResult.message}`);
     }
 
-    // Use cleaned content if available, otherwise fallback to original text
     const contentToProcess = metadataResult.data!.cleanContent || text;
+    
     const chunks = await splitText(contentToProcess);
+    const processedChunks = await createContextualChunks(contentToProcess, chunks);
+    const embeddings = await generateEmbeddings(processedChunks);
 
-    // Generate vector embeddings for each text chunk
-    const embeddings = await generateEmbeddings(chunks);
+    const documents = processedChunks.map((chunk, i) => ({
+      content: chunk,
+      embedding: embeddings[i],
+      title: metadataResult.data!.title,
+      author: metadataResult.data!.author,
+      topic: metadataResult.data!.topic,
+      url,
+      publishedAt: metadataResult.data!.publishedAt 
+        ? new Date(metadataResult.data!.publishedAt) 
+        : null
+    }));
 
-    // Store chunks and their embeddings in the database
-    await db.insert(documentsTable).values(
-      chunks.map((chunk, i) => ({
-        content: chunk,
-        embedding: embeddings[i],
-        title: metadataResult.data!.title,
-        author: metadataResult.data!.author,
-        topic: metadataResult.data!.topic,
-        url,
-        publishedAt: metadataResult.data!.publishedAt 
-          ? new Date(metadataResult.data!.publishedAt) 
-          : null
-      }))
-    );
-
+    await db.insert(documentsTable).values(documents as InsertDocument[]);
     return { success: true };
   } catch (error) {
     console.error("Error processing document:", error);
-    throw new Error("Failed to process document");
+    throw error;
   }
 }

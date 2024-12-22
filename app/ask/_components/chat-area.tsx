@@ -16,7 +16,6 @@ import ReactMarkdown from "react-markdown"
 import { addDocumentToChatAction } from "@/actions/db/chat-documents-actions"
 import { updateChatAction } from "@/actions/db/chats-actions"
 import { generateChatName } from "@/lib/chat-utils"
-import { getOptimizedQuery } from "@/actions/rag/retrieval/optimize-query"
 
 interface ChatAreaProps {
   initialDocuments: SelectDocument[]
@@ -31,7 +30,6 @@ export function ChatArea({
   userId,
   chatId
 }: ChatAreaProps) {
-  console.log("Initial documents:", initialDocuments)
   const [query, setQuery] = useState("")
   const [messages, setMessages] = useState<SelectMessage[]>(initialMessages)
   const [documents, setDocuments] = useState<SelectDocument[]>(initialDocuments)
@@ -91,9 +89,7 @@ export function ChatArea({
 
     let relevantDocs = documents
 
-    const optimizedQuery = await getOptimizedQuery(query, messages)
-
-    const docsResponse = await runRagPipeline(optimizedQuery)
+    const docsResponse = await runRagPipeline(query)
     if (!docsResponse.isSuccess || !docsResponse.data?.results.length) {
       await updateMessageAction(
         assistantMessage.data.id,

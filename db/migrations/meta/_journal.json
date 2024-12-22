@@ -29,6 +29,34 @@
       "when": 1733598058952,
       "tag": "0003_aromatic_may_parker",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1734032263724,
+      "tag": "0004_dark_maggott",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1734377354154,
+      "tag": "0005_optimal_energizer",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1734471710067,
+      "tag": "0006_typical_ender_wiggin",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1734519233087,
+      "tag": "0007_slippery_starfox",
+      "breakpoints": true
     }
   ]
 }

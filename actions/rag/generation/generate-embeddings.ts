@@ -12,7 +12,6 @@ export async function generateEmbeddings(texts: string[]) {
     dimensions: 1536, // Output vector size of 256 dimensions
     input: texts // Array of text strings to embed
   });
-  console.log(response);
 
   // Extract just the embedding vectors from the response
   return response.data.map((item) => item.embedding);

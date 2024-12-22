@@ -10,6 +10,8 @@ export const extractMetadataPrompt = `You are a metadata extraction and content 
 - Strategy: Content about AI strategy, implementation approaches, or best practices
 - Evaluation: Content about testing, measuring, or evaluating AI systems
 - Deployment: Content about deploying, scaling, or maintaining AI systems in production
+- Observability: Content about monitoring, observability, or observability tools
+- Other: Content that does not fit into the other categories
 
 4. Publication Date: Extract the publication date if present. Look for dates in the content, metadata, or any other indicators of when this was published. Return as ISO date string (YYYY-MM-DD) or null if not found.
 
@@ -28,6 +30,4 @@ Return the data in this exact format:
   "topic": "ONE_OF_THE_ABOVE_TOPICS",
   "publishedAt": "YYYY-MM-DD or null",
   "cleanContent": "The cleaned markdown content here"
-}
-
-The cleanContent should only contain the actual blog post text in markdown format.` 
+}` 

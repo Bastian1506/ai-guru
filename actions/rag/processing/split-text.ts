@@ -1,31 +1,22 @@
 "use server";
 
-import { get_encoding } from "tiktoken";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-// Splits input text into chunks of roughly equal token size for processing
 export async function splitText(text: string) {
-  const chunks: string[] = [];
-  // Target size for each chunk in tokens
-  const CHUNK_SIZE = 500;
-  // Initialize tokenizer using OpenAI's cl100k_base encoding
-  const encoding = get_encoding("cl100k_base");
+  const splitter = new RecursiveCharacterTextSplitter({
+    separators: ["\n\n", "\n", ".", "?", "!", " ", ""],
+    chunkSize: 800,
+    chunkOverlap: 400,
+    lengthFunction: (text) => text.length,
+  });
 
   try {
-    // Convert text to token IDs
-    const tokens = encoding.encode(text);
-
-    // Split tokens into chunks of CHUNK_SIZE
-    for (let i = 0; i < tokens.length; i += CHUNK_SIZE) {
-      // Get subset of tokens for this chunk
-      const chunkTokens = tokens.slice(i, i + CHUNK_SIZE);
-      // Convert token IDs back to text
-      const chunk = new TextDecoder().decode(encoding.decode(chunkTokens));
-      chunks.push(chunk);
-    }
+    const docs = await splitter.createDocuments([text]);
+    const chunks = docs.map(doc => doc.pageContent);
 
     return chunks;
-  } finally {
-    // Clean up tokenizer resources
-    encoding.free();
+  } catch (error) {
+    console.error("Error splitting text:", error);
+    throw new Error(`Failed to split text: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

@@ -92,13 +92,13 @@ ${context}
 When answering questions:
 1. Use both the context and the chat history to provide comprehensive answers
 2. If referring to previous messages, be explicit about what you're referring to
-3. If the question cannot be answered using the context or chat history, state that clearly
+3. If the question cannot be answered using the context or chat history, state that clearly. If the question contains a date, it is only related to the publication date of the document and thus the metadata filtering, but not about the content of the document. So it is not relevant to the answer. Just answer the question, without taking the date into account.
 4. Stay focused on the topic and maintain continuity with previous messages
 5. Do not make up information not present in the context or chat history`
 
     ;(async () => {
       const {textStream} = await streamText({
-        model: openai("gpt-4o-mini"),
+        model: openai("gpt-4o"),
         system: SYSTEM_PROMPT,
         messages: messages // Pass the full message history
       })

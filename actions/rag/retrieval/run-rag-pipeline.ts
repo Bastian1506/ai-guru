@@ -4,50 +4,32 @@ import { getOptimizedQuery } from "./optimize-query";
 import { rankDocuments } from "./rerank-documents";
 import { retrieveDocuments } from "./retrieve-documents";
 import { ActionState } from "@/types";
+import { RankedDocument } from "./rerank-documents";
 
-export async function runRagPipeline(query: string): Promise<ActionState<{results:{
-  id: string, 
-  title: string,
-  url: string, 
-  author: string, 
-  topic: string, 
-  publishedAt: string, 
-  content: string
-}[]}>> {
+export async function runRagPipeline(
+  query: string,
+  options = { vectorLimit: 20, keywordLimit: 20, rerankLimit: 5 }
+): Promise<ActionState<{results: RankedDocument[]}>> {
   try {
-    // 1. Optimize query
     const optimizedQuery = await getOptimizedQuery(query);
-    
-    // 2. Retrieve docs
-    const retrievedDocs = await retrieveDocuments(optimizedQuery, {
-      limit: 10
+    console.log("Optimized query:", optimizedQuery);
+    const retrievedDocs = await retrieveDocuments(optimizedQuery, { 
+      vectorLimit: options.vectorLimit,
+      keywordLimit: options.keywordLimit 
     });
-
-    // Check if we got documents
-    if (!retrievedDocs || retrievedDocs.length === 0) {
+    console.log("Retrieved documents count:", retrievedDocs.length);
+    if (!retrievedDocs?.length) {
       return {
         isSuccess: false,
         message: "No relevant documents found",
         data: { results: [] }
       }
     }
-
-    // 3. Rerank only if we have docs
-    const rankedResults = await rankDocuments(optimizedQuery, retrievedDocs as any, 3);
+    const rankedResults = await rankDocuments(optimizedQuery, retrievedDocs, options.rerankLimit);
     return {
       isSuccess: true,
       message: "RAG pipeline completed successfully",
-      data: {
-        results: rankedResults.map((result: any) => ({
-          id: result.id,
-          title: result.title,
-          url: result.url, 
-          author: result.author,
-          topic: result.topic,
-          publishedAt: result.publishedAt,
-          content: result.content
-        }))
-      }
+      data: { results: rankedResults }
     }
 
   } catch (error) {

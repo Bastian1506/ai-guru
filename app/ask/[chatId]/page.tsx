@@ -6,6 +6,7 @@ import { ChatArea } from "../_components/chat-area"
 import { ChatSkeleton } from "../_components/chat-skeleton"
 import { getChatMessagesAction } from "@/actions/db/messages-actions"
 import { getDocumentsByChatAction } from "@/actions/db/chat-documents-actions"
+import { redirect } from "next/navigation"
 
 export default async function ChatPage({
   params
@@ -35,12 +36,9 @@ async function ChatFetcher({
     getDocumentsByChatAction(chatId)
   ])
 
-  console.log("Raw documents response:", documentsResponse)
-  console.log("Documents data:", documentsResponse.data)
-  console.log(
-    "Mapped documents:",
-    (documentsResponse.data || []).map(cd => cd.document)
-  )
+  if (!documentsResponse.isSuccess || !messagesResponse.isSuccess) {
+    redirect("/ask")
+  }
 
   return (
     <ChatArea
